@@ -192,7 +192,7 @@ data_group_4_august <- subset(data_group_4, month_of_year == 8)
 data_group_4_september <- subset(data_group_4, month_of_year == 9)
 data_group_4_oktober <- subset(data_group_4, month_of_year == 10)
 data_group_4_november <- subset(data_group_4, month_of_year == 11)
-data_group_4_dezember <- subset(data_group_4, month_of_year == 12)
+data_group_4_december <- subset(data_group_4, month_of_year == 12)
 head(data_group_4)
 monthly_totals <- aggregate(count ~ month_of_year, data = data_group_4, sum)
 
