@@ -36,42 +36,7 @@ Wahrscheinlichkeit <- Anzahl_mit_eigenem_Geschenk / n_Simulationen
 # Ausgabe der Wahrscheinlichkeit
 print(Wahrscheinlichkeit)
 
-
 # ------------------- Aufgabe 3.2 -------------------
-wichtel_unglueck <- function(n, k, iterationen = 1e6) {
-  # Hilfsfunktion: Zählt die Anzahl der Personen, die ihr eigenes Geschenk erhalten
-  anzahl_eigene_geschenke <- function(permutation) {
-    sum(permutation == 1:length(permutation))  # Prüft, wie viele Elemente an ihrem ursprünglichen Platz bleiben
-  }
-  
-  # Zähler für erfolgreiche Fälle, in denen maximal k Personen ihr eigenes Geschenk erhalten
-  anzahl_erfolge <- 0
-  
-  # Monte-Carlo-Simulation mit der angegebenen Anzahl an Iterationen
-  for (i in 1:iterationen) {
-    # Erstelle eine zufällige Permutation der Geschenke
-    geschenke <- sample(1:n)
-    
-    # Bestimme die Anzahl der Personen, die ihr eigenes Geschenk erhalten haben
-    eigene_geschenke <- anzahl_eigene_geschenke(geschenke)
-    
-    # Falls die Anzahl der eigenen Geschenke höchstens k beträgt, zählt dies als Erfolg
-    if (eigene_geschenke <= k) {
-      anzahl_erfolge <- anzahl_erfolge + 1
-    }
-  }
-  
-  # Berechnung der Wahrscheinlichkeit, dass höchstens k Personen ihr eigenes Geschenk erhalten
-  wahrscheinlichkeit <- anzahl_erfolge / iterationen
-  
-  # Rückgabe der geschätzten Wahrscheinlichkeit
-  return(wahrscheinlichkeit)
-}
-
-# Beispielaufruf: Berechnung der Wahrscheinlichkeit für n = 8 und maximal k = 2 eigene Geschenke
-wahrscheinlichkeit <- wichtel_unglueck(8, 2)
-
-# ------------------- Aufgabe 3.3 -------------------
 # Funktion, die die Wahrscheinlichkeit berechnet, dass maximal k Personen ihr eigenes Geschenk bekommen
 wichtel_unglueck <- function(n, k, iterationen = 1e6) {
   
