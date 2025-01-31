@@ -1,49 +1,77 @@
-### Abgabe 2
+# ----------------- COMET_Abgabe_2 -----------------
 
-## Aufgabe 3
-# Aufgabe 3.1
-n<-8
-n_Simulationen<-10000
+# ------------------- Aufgabe 3 --------------------
+
+# ------------------- Aufgabe 3.1 -------------------
+# Anzahl der Personen/Geschenke
+n <- 8
+
+# Anzahl der Simulationen, die durchgeführt werden
+n_Simulationen <- 10000
+
+# Funktion, die überprüft, ob jemand sein eigenes Geschenk erhält
 kein_eigenes_Geschenk <- function(permutation) {
+  # Prüft, ob es ein Element gibt, das an seinem ursprünglichen Platz bleibt
   !any(permutation == 1:length(permutation))
 }
+
+# Zähler für die Fälle, in denen niemand sein eigenes Geschenk erhält
 Anzahl_mit_eigenem_Geschenk <- 0
 
+# Schleife für die Monte-Carlo-Simulation
 for (i in 1:n_Simulationen) {
+  # Erstelle eine zufällige Permutation der Geschenke
   Geschenke <- sample(1:n)
+  
+  # Überprüfe, ob niemand sein eigenes Geschenk erhält
   if (kein_eigenes_Geschenk(Geschenke)) {
+    # Falls ja, erhöhe den Zähler
     Anzahl_mit_eigenem_Geschenk <- Anzahl_mit_eigenem_Geschenk + 1
   }
 }
 
+# Berechnung der Wahrscheinlichkeit, dass niemand sein eigenes Geschenk erhält
 Wahrscheinlichkeit <- Anzahl_mit_eigenem_Geschenk / n_Simulationen
+
+# Ausgabe der Wahrscheinlichkeit
 print(Wahrscheinlichkeit)
 
-# Aufgabe 3.2
+
+# ------------------- Aufgabe 3.2 -------------------
 wichtel_unglueck <- function(n, k, iterationen = 1e6) {
+  # Hilfsfunktion: Zählt die Anzahl der Personen, die ihr eigenes Geschenk erhalten
   anzahl_eigene_geschenke <- function(permutation) {
-    sum(permutation == 1:length(permutation))
+    sum(permutation == 1:length(permutation))  # Prüft, wie viele Elemente an ihrem ursprünglichen Platz bleiben
   }
   
+  # Zähler für erfolgreiche Fälle, in denen maximal k Personen ihr eigenes Geschenk erhalten
   anzahl_erfolge <- 0
   
+  # Monte-Carlo-Simulation mit der angegebenen Anzahl an Iterationen
   for (i in 1:iterationen) {
+    # Erstelle eine zufällige Permutation der Geschenke
     geschenke <- sample(1:n)
     
+    # Bestimme die Anzahl der Personen, die ihr eigenes Geschenk erhalten haben
     eigene_geschenke <- anzahl_eigene_geschenke(geschenke)
     
+    # Falls die Anzahl der eigenen Geschenke höchstens k beträgt, zählt dies als Erfolg
     if (eigene_geschenke <= k) {
       anzahl_erfolge <- anzahl_erfolge + 1
     }
   }
   
+  # Berechnung der Wahrscheinlichkeit, dass höchstens k Personen ihr eigenes Geschenk erhalten
   wahrscheinlichkeit <- anzahl_erfolge / iterationen
+  
+  # Rückgabe der geschätzten Wahrscheinlichkeit
   return(wahrscheinlichkeit)
 }
 
+# Beispielaufruf: Berechnung der Wahrscheinlichkeit für n = 8 und maximal k = 2 eigene Geschenke
 wahrscheinlichkeit <- wichtel_unglueck(8, 2)
 
-# Aufgabe 3.3
+# ------------------- Aufgabe 3.3 -------------------
 # Funktion, die die Wahrscheinlichkeit berechnet, dass maximal k Personen ihr eigenes Geschenk bekommen
 wichtel_unglueck <- function(n, k, iterationen = 1e6) {
   
@@ -77,7 +105,7 @@ wahrscheinlichkeit <- wichtel_unglueck(8, 2)
 # Ausgabe der berechneten Wahrscheinlichkeit
 wahrscheinlichkeit
 
-# Aufgabe 3.4
+# ------------------- Aufgabe 3.4 -------------------
 library(testthat)
 
 # Test 1: Wahrscheinlichkeit für n = 1 (eine Person) und k = 1
@@ -103,84 +131,119 @@ test_that("Test für n = 10, k = 0", {
   expect_false(result == 0)  # Sie sollte nicht gleich 0 sein, da es einige Permutationen ohne eigene Geschenke gibt
 })
 
-# Aufgabe 3.5
+# ------------------- Aufgabe 3.5 -------------------
+# CSV-Datei einlesen
 data <- read.csv(
-  file = "/Users/aljoschabuntrock/Documents/Studium/Drittes Semester/Compt. M./Abgabe 2 COMET/bike_sharing_data_(with_NAs).csv", # Pfad zur .csv-Datei
-  header = TRUE, # die Datei hat eine Kopfzeile
-  sep = ",", # die Zellen sind durch Kommata getrennt
-  quote = "\""
+  file = "bike_sharing_data_(with_NAs).csv", # Pfad zur CSV-Datei mit fehlenden Werten (NAs)
+  header = TRUE, # Die Datei enthält eine Kopfzeile
+  sep = ",", # Die Spaltenwerte sind durch Kommas getrennt
+  quote = "\"" # Anführungszeichen für Textwerte
 )
+
+# Zeigt die ersten Zeilen des Datensatzes an
 head(data)
-subsec
+
+# Filtern der Daten für die Gruppe 4
 data_group_4 <- subset(data, group == 4)
+
+# Speichern des gefilterten Datensatzes als CSV-Datei
 write.csv(data_group_4)
+
+# Anzeigen der Spaltennamen des Datensatzes
 colnames(data)
 
+# Überprüfung, ob der gefilterte Datensatz fehlende Werte enthält
 anyNA(data_group_4)
+
+# Zählen der fehlenden Werte insgesamt
 sum(is.na(data_group_4))
+
+# Anzahl der fehlenden Werte pro Spalte
 colSums(is.na(data_group_4))
+
+# Anzeigen der Zeilen mit fehlenden Werten
 data_group_4[!complete.cases(data_group_4), ]
+
+# Speichern des bereinigten Datensatzes in eine neue CSV-Datei ohne Zeilennummern
 write.csv(data_group_4, file = "group_4_data.csv", row.names = FALSE)
+
+# Positionen der fehlenden Werte anzeigen
 which(is.na(data_group_4), arr.ind = TRUE)
-## NAs werden eliminiert##
-##day of year##
-data_group_4[182,4] <- 182
-data_group_4[217,4] <- 217
-##day of week##
-data_group_4[108,5] <- 3
-data_group_4[299,5] <- 5
-##month of year##
-data_group_4[57,6] <- 2
-data_group_4[184,6] <- 7
-##precipation+windspeed##
+
+# ---------------- Fehlende Werte (NAs) ersetzen ----------------
+
+## Fehlende Werte in "day_of_year" ersetzen
+data_group_4[182, 4] <- 182
+data_group_4[217, 4] <- 217
+
+## Fehlende Werte in "day_of_week" ersetzen
+data_group_4[108, 5] <- 3
+data_group_4[299, 5] <- 5
+
+## Fehlende Werte in "month_of_year" ersetzen
+data_group_4[57, 6] <- 2
+data_group_4[184, 6] <- 7
+
+## Fehlende Werte in "precipitation" und "windspeed" durch 0 ersetzen
 data_group_4[is.na(data_group_4[, 7]), 7] <- 0
 data_group_4[is.na(data_group_4[, 8]), 8] <- 0
-##aim,average,max Temp##
-# Mittelwert einer Spalte berechnen (NA-Werte ignorieren)
-mean_value_min <- mean(data_group_4$min_temperature, na.rm = TRUE)
 
-# NA-Werte in der Spalte durch den Mittelwert ersetzen
-data_group_4[251,9]<- mean_value_min
-##für avg##
+## Fehlende Werte in Temperaturspalten durch den Mittelwert ersetzen
+# Berechnung des Mittelwerts für "min_temperature" (NA-Werte ignorieren)
+mean_value_min <- mean(data_group_4$min_temperature, na.rm = TRUE)
+data_group_4[251, 9] <- mean_value_min  # Ersetzen des fehlenden Werts
+
+# Berechnung des Mittelwerts für "average_temperature"
 mean_value_avg <- mean(data_group_4$average_temperature, na.rm = TRUE)
-data_group_4[289,10] <- mean_value_avg
-##für max##
+data_group_4[289, 10] <- mean_value_avg
+
+# Berechnung des Mittelwerts für "max_temperature"
 mean_value_max <- mean(data_group_4$max_temperature, na.rm = TRUE)
-data_group_4[13,11] <- mean_value_max
-##count NA->durch mittelwert aus Tag davor und danach##
-count_neu <- (333+206)/2 
-data_group_4[175,12] <- count_neu
-##datenanomalien##
-##Minuswerte in precipation,windspeed und count##
-# Alle negativen Werte in column_name durch 0 ersetzen
+data_group_4[13, 11] <- mean_value_max
+
+## Fehlender Wert in "count" durch Mittelwert aus dem vorherigen und nächsten Tag ersetzen
+count_neu <- (333 + 206) / 2  # Durchschnitt aus zwei benachbarten Werten berechnen
+data_group_4[175, 12] <- count_neu
+
+# ---------------- Datenanomalien bereinigen ----------------
+
+## Negative Werte in "precipitation", "windspeed" und "count" durch 0 ersetzen
 data_group_4$precipitation[data_group_4$precipitation < 0] <- 0
 data_group_4$windspeed[data_group_4$windspeed < 0] <- 0
 data_group_4$count[data_group_4$count < 0] <- 0
-##Minuswerte bei Temp##
-which(data_group_4$min_temperature < 0)
+
+## Negative Werte in Temperaturspalten manuell korrigieren
+which(data_group_4$min_temperature < 0)  # Sucht nach negativen Werten
 which(data_group_4$average_temperature < 0)
 which(data_group_4$max_temperature < 0)
-data_group_4[242,9] <- 65
-data_group_4[179,10] <- 75
-data_group_4[101,11] <- 67
-##Fahrenheit in Celcius##
-temperature_converter <- function(
-    temp, from_unit = "F", to_unit = "C", digits = 2
-) {
+
+# Manuelle Korrektur einzelner falscher Temperaturwerte
+data_group_4[242, 9] <- 65
+data_group_4[179, 10] <- 75
+data_group_4[101, 11] <- 67
+
+# ---------------- Umrechnung von Fahrenheit in Celsius ----------------
+
+# Funktion zur Umrechnung zwischen Fahrenheit und Celsius
+temperature_converter <- function(temp, from_unit = "F", to_unit = "C", digits = 2) {
   if (from_unit == "F" && to_unit == "C") {
-    temp_conv <- (temp - 32) * 5/9
+    temp_conv <- (temp - 32) * 5 / 9  # Fahrenheit nach Celsius
   } else if (from_unit == "C" && to_unit == "F") {
-    temp_conv <- (temp * 9/5) + 32
+    temp_conv <- (temp * 9 / 5) + 32  # Celsius nach Fahrenheit
   } else {
-    stop("Invalid units.")
+    stop("Invalid units.")  # Falls falsche Einheiten angegeben werden
   }
-  return(round(temp_conv, digits = digits))
+  return(round(temp_conv, digits = digits))  # Ergebnis auf 2 Nachkommastellen runden
 }
 
+# Temperaturspalten von Fahrenheit in Celsius umwandeln
 data_group_4$min_temperature <- temperature_converter(data_group_4$min_temperature)
 data_group_4$average_temperature <- temperature_converter(data_group_4$average_temperature)
 data_group_4$max_temperature <- temperature_converter(data_group_4$max_temperature)
-##Bestimmen Sie den Monat mit der h¨ ochsten Gesamtanzahl ausgeliehener Fahrr¨ ader.##
+
+# ---------------- Bestimmung des Monats mit den meisten ausgeliehenen Fahrrädern ----------------
+
+# Erstellen von Teilmengen für jeden Monat
 data_group_4_januar <- subset(data_group_4, month_of_year == 1)
 data_group_4_februar <- subset(data_group_4, month_of_year == 2)
 data_group_4_märz <- subset(data_group_4, month_of_year == 3)
@@ -192,14 +255,20 @@ data_group_4_august <- subset(data_group_4, month_of_year == 8)
 data_group_4_september <- subset(data_group_4, month_of_year == 9)
 data_group_4_oktober <- subset(data_group_4, month_of_year == 10)
 data_group_4_november <- subset(data_group_4, month_of_year == 11)
-data_group_4_december <- subset(data_group_4, month_of_year == 12)
+data_group_4_dezember <- subset(data_group_4, month_of_year == 12)
+
+# Anzeige der ersten Zeilen des bereinigten Datensatzes
 head(data_group_4)
+
+# Berechnung der Gesamtanzahl der ausgeliehenen Fahrräder pro Monat
 monthly_totals <- aggregate(count ~ month_of_year, data = data_group_4, sum)
 
+# Bestimmung des Monats mit der höchsten Anzahl an ausgeliehenen Fahrrädern
 top_month <- monthly_totals[which.max(monthly_totals$count), ]
-print(top_month)
+print(top_month)  # Ausgabe des Monats mit den meisten Leihvorgängen
 
-## Aufgabe 4
+
+# ------------------- Aufgabe 4 -------------------
 install.packages("ggplot2")
 library(ggplot2)
 install.packages("dplyr")
@@ -208,179 +277,207 @@ install.packages("gapminder")
 library(gapminder)
 data(gapminder)
 
-# Aufgabe 4.2
-#a
-ggplot(data_group_4, aes(x = average_temperature, y = count)) +
-  geom_point(color = "blue", alpha = 0.6) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  labs(
-    title = "Zusammenhang zwischen Temperatur und Anzahl ausgeliehener Fahrräder",
-    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",
-    x = "Temperatur (°C)",
-    y = "Anzahl ausgeliehener Fahrräder"
-  ) +
-  theme_minimal()
+# ------------------- Aufgabe 4.2 -------------------
+# ----------------- a) Einfluss der Temperatur auf die Anzahl der ausgeliehenen Fahrräder -----------------
 
-#b
-data_group_4$date <- as.Date(data_group_4$date)
-ggplot(data_group_4, aes(x = precipitation, y = count)) + 
-  geom_point(color = "blue", alpha = 0.6) +  
+ggplot(data_group_4, aes(x = average_temperature, y = count)) +  # Erstellen eines Scatterplots mit Temperatur als x-Achse und Anzahl der Fahrräder als y-Achse
+  geom_point(color = "blue", alpha = 0.6) +  # Punkte in Blau darstellen, Transparenz (alpha) auf 0.6 setzen
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Lineare Regression hinzufügen (schwarze Linie), ohne Konfidenzintervall
   labs(
-    title = "Zusammenhang zwischen Niederschlag und Anzahl ausgeliehener Fahrräder",
-    subtitle = "Blaue Punkte = Ausprägungen",
-    x = "Niederschlag (mm)",
-    y = "Anzahl ausgeliehener Fahrräder"
+    title = "Zusammenhang zwischen Temperatur und Anzahl ausgeliehener Fahrräder",  # Titel des Diagramms
+    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",  # Untertitel zur Erklärung der Darstellung
+    x = "Temperatur (°C)",  # Bezeichnung der x-Achse
+    y = "Anzahl ausgeliehener Fahrräder"  # Bezeichnung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
+
+# ----------------- b) Einfluss des Niederschlags auf die Anzahl der ausgeliehenen Fahrräder -----------------
+
+data_group_4$date <- as.Date(data_group_4$date)  # Konvertieren der Spalte "date" in das Datumsformat
+
+ggplot(data_group_4, aes(x = precipitation, y = count)) +  # Scatterplot mit Niederschlag als x-Achse und Anzahl der Fahrräder als y-Achse
+  geom_point(color = "blue", alpha = 0.6) +  # Blaue Punkte für die Datenpunkte mit Transparenz 0.6
+  labs(
+    title = "Zusammenhang zwischen Niederschlag und Anzahl ausgeliehener Fahrräder",  # Titel des Diagramms
+    subtitle = "Blaue Punkte = Ausprägungen",  # Erklärung der Darstellung
+    x = "Niederschlag (mm)",  # Bezeichnung der x-Achse
+    y = "Anzahl ausgeliehener Fahrräder"  # Bezeichnung der y-Achse
+  ) +
+  theme_minimal()  # Minimalistisches Design für das Diagramm
+
+# Berechnung der Korrelation zwischen Niederschlag und Anzahl ausgeliehener Fahrräder
 cor(data_group_4$precipitation, data_group_4$count, use = "complete.obs")  
-8.05
+
+# Überprüfen, an welcher Stelle im Datensatz der Niederschlagswert 8.05 auftritt
 which(data_group_4$precipitation == 8.05 , arr.ind = TRUE)
-data_group_4[272,7] <- NA
 
-#c
-ggplot(data_group_4, aes(x = windspeed, y = count)) +
-  geom_point(color = "blue", alpha = 0.6) +  
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+# Setzen des Niederschlagswerts in Zeile 272 auf NA, falls dieser fehlerhaft ist
+data_group_4[272, 7] <- NA
+
+# ----------------- c) Einfluss der Windgeschwindigkeit auf die Anzahl der ausgeliehenen Fahrräder -----------------
+
+ggplot(data_group_4, aes(x = windspeed, y = count)) +  # Scatterplot mit Windgeschwindigkeit als x-Achse und Anzahl der Fahrräder als y-Achse
+  geom_point(color = "blue", alpha = 0.6) +  # Blaue Punkte für die Datenpunkte mit Transparenz 0.6
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Lineare Regression hinzufügen (schwarze Linie), ohne Konfidenzintervall
   labs(
-    title = "Zusammenhang zwischen Windgeschwindigkeit und Anzahl ausgeliehener Fahrräder",
-    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",
-    x = "Windgeschwindigkeit",
-    y = "Anzahl ausgeliehener Fahrräder"
+    title = "Zusammenhang zwischen Windgeschwindigkeit und Anzahl ausgeliehener Fahrräder",  # Titel des Diagramms
+    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",  # Erklärung der Darstellung
+    x = "Windgeschwindigkeit",  # Bezeichnung der x-Achse
+    y = "Anzahl ausgeliehener Fahrräder"  # Bezeichnung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
-#d
-ggplot(data_group_4, aes(x = date, y = count)) +
-  geom_point(color = "blue", alpha = 0.6) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+# ----------------- d) Entwicklung der Anzahl ausgeliehener Fahrräder über die Zeit -----------------
+
+ggplot(data_group_4, aes(x = date, y = count)) +  # Scatterplot mit Datum als x-Achse und Anzahl der Fahrräder als y-Achse
+  geom_point(color = "blue", alpha = 0.6) +  # Blaue Punkte für die Datenpunkte mit Transparenz 0.6
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Lineare Regression hinzufügen (schwarze Linie), ohne Konfidenzintervall
   labs(
-    title = "Zusammenhang zwischen Zeit und Anzahl ausgeliehener Fahrräder",
-    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",
-    x = "Tag",
-    y = "Anzahl ausgeliehener Fahrräder"
+    title = "Zusammenhang zwischen Zeit und Anzahl ausgeliehener Fahrräder",  # Titel des Diagramms
+    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",  # Erklärung der Darstellung
+    x = "Tag",  # Bezeichnung der x-Achse
+    y = "Anzahl ausgeliehener Fahrräder"  # Bezeichnung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
-# Aufgabe 4.3
+# ------------------- Aufgabe 4.3 -------------------
+# ----------------- Erstellen von zwei separaten Datensätzen basierend auf Niederschlag -----------------
+
+# Datensatz für Tage mit Niederschlag (precipitation > 0)
 data_niederschlag <- data_group_4[data_group_4$precipitation > 0, ]
+
+# Datensatz für Tage ohne Niederschlag (precipitation == 0)
 data_kein_niederschlag <- data_group_4[data_group_4$precipitation == 0, ]
 
-##für mit regen##
-ggplot(data_niederschlag, aes(x = average_temperature, y = count)) + 
-  geom_point(color = "blue", alpha = 0.6) +  
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+# ----------------- a) Zusammenhang zwischen Temperatur und Verleihzahlen an Tagen MIT Niederschlag -----------------
+
+ggplot(data_niederschlag, aes(x = average_temperature, y = count)) +  # Scatterplot mit Temperatur als x-Achse und Anzahl der Fahrräder als y-Achse
+  geom_point(color = "blue", alpha = 0.6) +  # Blaue Punkte für Datenpunkte, Transparenz auf 0.6 setzen
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Lineare Regression hinzufügen (schwarze Linie), ohne Konfidenzintervall
   labs(
-    title = "Zusammenhang zwischen Temperatur und Verleihzahlen (Regen)",
-    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",
-    x = "Temperatur (°C)",
-    y = "Anzahl ausgeliehener Fahrräder"
+    title = "Zusammenhang zwischen Temperatur und Verleihzahlen (Regen)",  # Titel des Diagramms
+    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",  # Erklärung der Darstellung
+    x = "Temperatur (°C)",  # Beschriftung der x-Achse
+    y = "Anzahl ausgeliehener Fahrräder"  # Beschriftung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
-##für ohne regen##
-##für ohne regen##
-ggplot(data_kein_niederschlag, aes(x = average_temperature, y = count)) + 
-  geom_point(color = "blue", alpha = 0.6) +  
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+# ----------------- b) Zusammenhang zwischen Temperatur und Verleihzahlen an Tagen OHNE Niederschlag -----------------
+
+ggplot(data_kein_niederschlag, aes(x = average_temperature, y = count)) +  # Scatterplot mit Temperatur als x-Achse und Anzahl der Fahrräder als y-Achse
+  geom_point(color = "blue", alpha = 0.6) +  # Blaue Punkte für Datenpunkte, Transparenz auf 0.6 setzen
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Lineare Regression hinzufügen (schwarze Linie), ohne Konfidenzintervall
   labs(
-    title = "Zusammenhang zwischen Temperatur und Verleihzahlen (ohen Regen)",
-    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",
-    x = "Temperatur (°C)",
-    y = "Anzahl ausgeliehener Fahrräder"
+    title = "Zusammenhang zwischen Temperatur und Verleihzahlen (ohne Regen)",  # Titel des Diagramms (Tippfehler "ohen" korrigiert)
+    subtitle = "Schwarze Linie = Korrelation | Blaue Punkte = Ausprägungen",  # Erklärung der Darstellung
+    x = "Temperatur (°C)",  # Beschriftung der x-Achse
+    y = "Anzahl ausgeliehener Fahrräder"  # Beschriftung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
 
-# Aufgabe 4.4
-ggplot(data_group_4, aes(x = count)) + 
-  geom_histogram(binwidth = 10, fill = "skyblue", color = "black", alpha = 0.7) +
+# ------------------- Aufgabe 4.4 -------------------
+# ----------------- Histogramm zur Verteilung der Anzahl ausgeliehener Fahrräder -----------------
+
+ggplot(data_group_4, aes(x = count)) +  # Histogramm für die Anzahl der ausgeliehenen Fahrräder
+  geom_histogram(binwidth = 10, fill = "skyblue", color = "black", alpha = 0.7) +  # Balken in Himmelblau mit schwarzer Umrandung und 70% Deckkraft
   labs(
-    title = "Verteilung der Anzahl ausgeliehener Fahrräder",
-    subtitle = "Blaue Säulen = Häufigkeit verschiedener Ausleihungsmengen im Beobachtungszeitraum",
-    x = "Anzahl ausgeliehener Fahrräder",
-    y = "Häufigkeit"
+    title = "Verteilung der Anzahl ausgeliehener Fahrräder",  # Diagrammtitel
+    subtitle = "Blaue Säulen = Häufigkeit verschiedener Ausleihungsmengen im Beobachtungszeitraum",  # Beschreibung der Visualisierung
+    x = "Anzahl ausgeliehener Fahrräder",  # Beschriftung der x-Achse
+    y = "Häufigkeit"  # Beschriftung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
-ggplot(data_group_4, aes(x = average_temperature)) + 
-  geom_histogram(binwidth = 1, fill = "lightcoral", color = "black", alpha = 0.7) +
+# ----------------- Histogramm zur Verteilung der durchschnittlichen Temperatur -----------------
+
+ggplot(data_group_4, aes(x = average_temperature)) +  # Histogramm für die Durchschnittstemperatur
+  geom_histogram(binwidth = 1, fill = "lightcoral", color = "black", alpha = 0.7) +  # Balken in Korallenrot mit schwarzer Umrandung und 70% Deckkraft
   labs(
-    title = "Verteilung der Temperatur (°C)",
-    subtitle = "Rote Säulen = Häufigkeit verschiedener auftretener Temperaturen im Beobachtungszeitraum",
-    x = "Temperatur (°C)",
-    y = "Häufigkeit"
+    title = "Verteilung der Temperatur (°C)",  # Diagrammtitel
+    subtitle = "Rote Säulen = Häufigkeit verschiedener auftretender Temperaturen im Beobachtungszeitraum",  # Beschreibung der Visualisierung
+    x = "Temperatur (°C)",  # Beschriftung der x-Achse
+    y = "Häufigkeit"  # Beschriftung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
-ggplot(data_group_4, aes(x = precipitation)) + 
-  geom_histogram(binwidth = 0.1, fill = "lightgreen", color = "black", alpha = 0.7) +
+# ----------------- Histogramm zur Verteilung der Niederschlagsmenge -----------------
+
+ggplot(data_group_4, aes(x = precipitation)) +  # Histogramm für die Niederschlagsmenge
+  geom_histogram(binwidth = 0.1, fill = "lightgreen", color = "black", alpha = 0.7) +  # Balken in Hellgrün mit schwarzer Umrandung und 70% Deckkraft
   labs(
-    title = "Verteilung der Niederschlagsmenge (mm)",
-    subtitle = "Grüne Säulen = Häufigkeit verschiedener Niederschlagsmengen im Beobachtungszeitraum",
-    x = "Niederschlag (mm)",
-    y = "Häufigkeit"
+    title = "Verteilung der Niederschlagsmenge (mm)",  # Diagrammtitel
+    subtitle = "Grüne Säulen = Häufigkeit verschiedener Niederschlagsmengen im Beobachtungszeitraum",  # Beschreibung der Visualisierung
+    x = "Niederschlag (mm)",  # Beschriftung der x-Achse
+    y = "Häufigkeit"  # Beschriftung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
-ggplot(data_group_4, aes(x = windspeed)) + 
-  geom_histogram(binwidth = 1, fill = "gold", color = "black", alpha = 0.7) +
+# ----------------- Histogramm zur Verteilung der Windgeschwindigkeit -----------------
+
+ggplot(data_group_4, aes(x = windspeed)) +  # Histogramm für die Windgeschwindigkeit
+  geom_histogram(binwidth = 1, fill = "gold", color = "black", alpha = 0.7) +  # Balken in Gold mit schwarzer Umrandung und 70% Deckkraft
   labs(
-    title = "Verteilung der Windgeschwindigkeit (km/h)",
-    subtitle = "Goldene Säulen = Häufigkeit verschiedener Windgeschwindigkeiten im Beobachtungszeitraum",
-    x = "Windgeschwindigkeit (km/h)",
-    y = "Häufigkeit"
+    title = "Verteilung der Windgeschwindigkeit (km/h)",  # Diagrammtitel
+    subtitle = "Goldene Säulen = Häufigkeit verschiedener Windgeschwindigkeiten im Beobachtungszeitraum",  # Beschreibung der Visualisierung
+    x = "Windgeschwindigkeit (km/h)",  # Beschriftung der x-Achse
+    y = "Häufigkeit"  # Beschriftung der y-Achse
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für das Diagramm
 
+# ------------------- Aufgabe 4.5 -------------------
+# ----------------- Datum nach Jahreszeiten aufteilen -----------------
 
-# Aufgabe 4.5
-#Datum nach Jahreszeiten aufteilen#
 data_group_4$season <- case_when(
-  data_group_4$month_of_year %in% c(3, 4, 5) ~ "Frühling",
-  data_group_4$month_of_year %in% c(6, 7, 8) ~ "Sommer",
-  data_group_4$month_of_year %in% c(9, 10, 11) ~ "Herbst",
-  data_group_4$month_of_year %in% c(12, 1, 2) ~ "Winter",
-  TRUE ~ NA_character_  
+  data_group_4$month_of_year %in% c(3, 4, 5) ~ "Frühling",  # Monate März, April, Mai = Frühling
+  data_group_4$month_of_year %in% c(6, 7, 8) ~ "Sommer",  # Monate Juni, Juli, August = Sommer
+  data_group_4$month_of_year %in% c(9, 10, 11) ~ "Herbst",  # Monate September, Oktober, November = Herbst
+  data_group_4$month_of_year %in% c(12, 1, 2) ~ "Winter",  # Monate Dezember, Januar, Februar = Winter
+  TRUE ~ NA_character_  # Falls eine andere Zahl vorkommt (sollte nicht passieren), wird NA gesetzt
 )
 
-##Grafik erstellen##
-ggplot(data_group_4, aes(x = count, fill = season)) + 
-  geom_density(alpha = 0.2) +  # Transparenz für Überlagerung
+# ----------------- Grafik zur Verteilung der Anzahl ausgeliehener Fahrräder nach Jahreszeit -----------------
+
+ggplot(data_group_4, aes(x = count, fill = season)) +  # x-Achse = Anzahl der ausgeliehenen Fahrräder, Farbe nach Jahreszeit
+  geom_density(alpha = 0.25) +  # Dichtekurve mit 25% Transparenz, um Überlagerung zu ermöglichen
   labs(
-    title = "Verteilung der Anzahl ausgeliehener Fahrräder nach Jahreszeit",
-    x = "Anzahl ausgeliehener Fahrräder",
-    y = "Dichte"
+    title = "Verteilung der Anzahl ausgeliehener Fahrräder nach Jahreszeit",  # Titel des Diagramms
+    x = "Anzahl ausgeliehener Fahrräder",  # Beschriftung der x-Achse
+    y = "Dichte"  # Beschriftung der y-Achse
   ) +
-  scale_fill_manual(
+  scale_fill_manual(  # Manuelles Setzen der Farben für die Jahreszeiten
     values = c(
-      "Frühling" = "green",
-      "Sommer" = "red",
-      "Herbst" = "orange",
-      "Winter" = "blue"
+      "Frühling" = "green",  # Frühling = Grün
+      "Sommer" = "red",  # Sommer = Rot
+      "Herbst" = "orange",  # Herbst = Orange
+      "Winter" = "blue"  # Winter = Blau
     )
   ) +
-  theme_minimal()
+  theme_minimal()  # Minimalistisches Design für eine klare Darstellung
 
 # Aufgabe 4.6
 install.packages("plotly")
 library(plotly)
+# ----------------- 3D-Grafik der Fahrradverleihzahlen in Abhängigkeit von Temperatur und Windgeschwindigkeit -----------------
+
 "3D_Grafik" <- plot_ly(
-  data = data_group_4,
-  x = ~average_temperature,
-  y = ~windspeed,
-  z = ~count,
-  color = ~count,
-  colors = c("#efedf5", "#bcbddc", "#756bb1"),
-  type = "scatter3d",
-  mode = "markers",
-  marker = list(size = 5, opacity = 0.8)
+  data = data_group_4,  # Datensatz für die Visualisierung
+  x = ~average_temperature,  # x-Achse: Durchschnittliche Temperatur in °C
+  y = ~windspeed,  # y-Achse: Windgeschwindigkeit
+  z = ~count,  # z-Achse: Anzahl ausgeliehener Fahrräder
+  color = ~count,  # Farbgebung basierend auf der Anzahl der ausgeliehenen Fahrräder
+  colors = c("#efedf5", "#bcbddc", "#756bb1"),  # Farbpalette von hell bis dunkel für bessere Lesbarkeit
+  type = "scatter3d",  # 3D-Streudiagramm
+  mode = "markers",  # Punkte als Markierungen ohne Linien
+  marker = list(size = 4, opacity = 0.8)  # Markergröße und Transparenz für bessere Sichtbarkeit
 )
-`3D_Grafik`%>% layout(scene = list(xaxis = list(title = "Temperatur in C°"),
-                                   yaxis = list(title = "Windgeschwindigkeit"),
-                                   zaxis = list(title = "Anzahl ausgeliehener Fahrräder")))
 
+# ----------------- Achsentitel und Layout der 3D-Grafik -----------------
 
-## Für die Abgabeaufgabe 
-
-bike$data <- as.Date(bike$data)
-
+`3D_Grafik` %>% layout(
+  scene = list(
+    xaxis = list(title = "Temperatur in C°"),  # Titel der x-Achse
+    yaxis = list(title = "Windgeschwindigkeit"),  # Titel der y-Achse
+    zaxis = list(title = "Anzahl ausgeliehener Fahrräder")  # Titel der z-Achse
+  )
+)
